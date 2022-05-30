@@ -1,0 +1,10 @@
+{
+    "Test": {
+        "balance": 1000,
+        "pin": 1234
+    },
+    "Jesse": {
+        "balance": 0,
+        "pin": 5678
+    }
+}
