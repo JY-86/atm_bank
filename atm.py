@@ -1,10 +1,12 @@
 import time, os, sys, colorama
+from tkinter.messagebox import askquestion
 from urllib import request
 from colorama import Fore, Back, Style
 
 colorama.init(autoreset=True)
 
 username == ""
+user = {}
 
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
@@ -73,7 +75,6 @@ def PrintReceipt(UserFirstName, UserLastName, TransactionType, TransactionAmount
     with open("receipt.txt", "w+") as f:
         pass
 
-
 def askQuestion(message, answer_validator,  case_sensitive=True):
     """
     Repeatedly asks user for an input until input meets the correct requirements
@@ -141,10 +142,7 @@ def requestLogin():
             case_sensitive=True)
 
         if (answer == "yes"):
-            global isNew
-            isNew = True
-
-            # send post request to server attempting to register the username
+            # send post request to server attempting to register the username --> CHANGE TO CHECK USERNAME DOESNT EXIST
             res = requests.post(getRouteUrl("/register"), json={"username":username})
 
             if res.status_code == 200: # username is valid
@@ -155,9 +153,13 @@ def requestLogin():
             else: # some other server error, like an internal error
                 print("Unfortunately the request to register the username failed. Please try again.")
         else:
+            pin = askQuestion("Please enter a PIN (your 4 digit numeric identifier): ", lambda x: x.isnumeric() and len(x) == 4)
+
+            # check pin is correct
             # send post request to server to check whether user with this username exists
             res = requests.post(getRouteUrl("/login"), json={"username":username})
 
+            #
             if (res.status_code == 200): # user exists
                 print(f"Username found!")
                 break
@@ -168,7 +170,6 @@ def requestLogin():
 
 
 def main():
-    
     requestLogin()
 
 
