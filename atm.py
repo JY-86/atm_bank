@@ -1,10 +1,12 @@
 import time, os, sys, colorama
+from tkinter.messagebox import askquestion
 from urllib import request
 from colorama import Fore, Back, Style
 
 colorama.init(autoreset=True)
 
 username == ""
+user = {}
 
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
@@ -32,33 +34,6 @@ def printTitleScreen():
         for line in range(rows):
             print(f"{Fore.YELLOW}{Logo.splitlines()[line]}")
             time.sleep(0.2)
-
-
-class LoginSystem:
-    def __init__(self):
-        self.LogoAnimation()
-        self.Login()
-
-    def LogoAnimation(self):
-        cls()
-        AnimatedLogo(BankLogo, LogoRows)
-        SlowType(
-        """\nHello! Welcome to the (BANK NAME) ATM.\n""", 100)
-
-    def Login(self):
-        username = str(input("Username: "))
-        pin = int(input("PIN: "))
-
-    def ValidateCredentials(self):
-        pass ## Reading json file logic will go here
-
-class MainMenu:
-    def __init__(self):
-        pass
-
-
-if __name__ == "__main__":
-    LoginSystem()
 
 
 def askQuestion(message, answer_validator,  case_sensitive=True):
@@ -128,10 +103,7 @@ def requestLogin():
             case_sensitive=True)
 
         if (answer == "yes"):
-            global isNew
-            isNew = True
-
-            # send post request to server attempting to register the username
+            # send post request to server attempting to register the username --> CHANGE TO CHECK USERNAME DOESNT EXIST
             res = requests.post(getRouteUrl("/register"), json={"username":username})
 
             if res.status_code == 200: # username is valid
@@ -142,9 +114,13 @@ def requestLogin():
             else: # some other server error, like an internal error
                 print("Unfortunately the request to register the username failed. Please try again.")
         else:
+            pin = askQuestion("Please enter a PIN (your 4 digit numeric identifier): ", lambda x: x.isnumeric() and len(x) == 4)
+
+            # check pin is correct
             # send post request to server to check whether user with this username exists
             res = requests.post(getRouteUrl("/login"), json={"username":username})
 
+            #
             if (res.status_code == 200): # user exists
                 print(f"Username found!")
                 break
@@ -155,7 +131,6 @@ def requestLogin():
 
 
 def main():
-    
     requestLogin()
 
 
