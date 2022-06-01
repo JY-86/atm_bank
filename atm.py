@@ -33,32 +33,45 @@ def printTitleScreen():
             print(f"{Fore.YELLOW}{Logo.splitlines()[line]}")
             time.sleep(0.2)
 
+#Receipt needs 
+"""
+- User's full name
+- Date / Time of the transaction taken place
+- Address of the ATM (School's address --> 419A Windsor Rd, Baulkham Hills NSW 2153) 
+- Type of transaction (Withdrawal or Deposit)
+- Amount being withdrawn / deposited
+- Current Balance
+"""
 
-class LoginSystem:
-    def __init__(self):
-        self.LogoAnimation()
-        self.Login()
+def PrintReceipt(UserFirstName, UserLastName, TransactionType, TransactionAmount, UserBalance): 
+    
+    ## Info needed to be shown in receipt 
+    DateTime = datetime.now() #Returns the date and time of the transaction
+    DateTimeString = DateTime.strftime("%d/%m/%Y %H:%M:%S")
+    Address = "419A Windsor Rd, Baulkham Hills NSW 2153"
 
-    def LogoAnimation(self):
-        cls()
-        AnimatedLogo(BankLogo, LogoRows)
-        SlowType(
-        """\nHello! Welcome to the (BANK NAME) ATM.\n""", 100)
+    ## Receipt components 
+    ReceiptHeader = """
+    ############################################
+    #           (INSERT A BANK NAME)           #
+    ############################################
+    """
+    ReceiptBody = f"""
+    User: {UserFirstName} {UserLastName}
+    
+    Date and Time of Transaction: {DateTimeString}
+    Address: {Address}
 
-    def Login(self):
-        username = str(input("Username: "))
-        pin = int(input("PIN: "))
+    Transaction Type: {TransactionType}
+    Transaction Amount: {TransactionAmount}
 
-    def ValidateCredentials(self):
-        pass ## Reading json file logic will go here
+    Current Balance: {UserBalance}
 
-class MainMenu:
-    def __init__(self):
+    Thank you for using the {BankName} ATM!
+    """
+   
+    with open("receipt.txt", "w+") as f:
         pass
-
-
-if __name__ == "__main__":
-    LoginSystem()
 
 
 def askQuestion(message, answer_validator,  case_sensitive=True):
