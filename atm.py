@@ -5,35 +5,45 @@ from colorama import Fore, Back, Style
 
 colorama.init(autoreset=True)
 
-username == ""
+username = ""
 user = {}
 
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
-def printTitleScreen():
-    BankLogo = """
-    ______   _______  _        _          _        _______  _______  _______   
-    (  ___ \ (  ___  )( (    /|| \    /\  ( (    /|(  ___  )(       )(  ____ \  
-    | (   ) )| (   ) ||  \  ( ||  \  / /  |  \  ( || (   ) || () () || (    \/  
-    | (__/ / | (___) ||   \ | ||  (_/ /   |   \ | || (___) || || || || (__      
-    |  __ (  |  ___  || (\ \) ||   _ (    | (\ \) ||  ___  || |(_)| ||  __)     
-    | (  \ \ | (   ) || | \   ||  ( \ \   | | \   || (   ) || |   | || (        
-    | )___) )| )   ( || )  \  ||  /  \ \  | )  \  || )   ( || )   ( || (____/\  
-    |/ \___/ |/     \||/    )_)|_/    \/  |/    )_)|/     \||/     \|(_______/"""
+BankLogo = """
+  ____   _                                                           
+ |  _ \ (_)                                                          
+ | |_) | _   __ _                                                    
+ |  _ < | | / _` |                                                   
+ | |_) || || (_| |                                                   
+ |____/ |_| \__, |     _                                             
+ |  _ \      __/ |    | |                                            
+ | |_) |  __|____ __  | | __                                         
+ |  _ <  / _` || '_ \ | |/ /                                         
+ | |_) || (_| || | | ||   <                                          
+ |______ \__,_||_| |_||_|\_\                    _    _               
+  / ____|                                      | |  (_)              
+ | |      ___   _ __  _ __    ___   _ __  __ _ | |_  _   ___   _ __  
+ | |     / _ \ | '__|| '_ \  / _ \ | '__|/ _` || __|| | / _ \ | '_ \ 
+ | |____| (_) || |   | |_) || (_) || |  | (_| || |_ | || (_) || | | |
+  \_____|\___/ |_|   | .__/  \___/ |_|   \__,_| \__||_| \___/ |_| |_|
+                     | |                                             
+                     |_|                                             
+"""
 
-    LogoRows = 9
+LogoRows = 19
     
-    def SlowType(str, speed):
-        for letter in str:
-            sys.stdout.write(letter)
-            sys.stdout.flush()
-            time.sleep(speed ** -1)
+def SlowType(str, speed):
+    for letter in str:
+        sys.stdout.write(letter)
+        sys.stdout.flush()
+        time.sleep(speed ** -1)
 
-    def AnimatedLogo(Logo, rows):
-        for line in range(rows):
-            print(f"{Fore.YELLOW}{Logo.splitlines()[line]}")
-            time.sleep(0.2)
+def AnimatedLogo(Logo):
+    for line in range(LogoRows):
+        print(f"{Fore.YELLOW}{Logo.splitlines()[line]}")
+        time.sleep(0.2)
 
 #Receipt needs 
 """
@@ -169,8 +179,50 @@ def requestLogin():
                 print("We counld not log you in at this time. Please try again.")
 
 
-def main():
-    requestLogin()
+def mainMenu():
+    cls()
+    AnimatedLogo(BankLogo)
 
+    ## The atm system will address the user directly by their name by referencing the username variable ##
+    ## The main menu will outline the functions the user can execute: eg. deposit, withdrawal, check balance, etc ##
+    MainMenuMessage = f"""
+    Welcome {username} to the Big Bank Corporation ATM!
+    Enter the number of the corresponding action you would like to execute:
+
+    (1) Check Balance
+    (2) Withdraw
+    (3) Deposit 
+    (4) Exit 
+
+    """
+
+    SlowType(MainMenuMessage, 100)
+    UserAction = int(input("Number of Action (1, 2, 3, 4): "))
+    return UserAction
+
+def CheckBalance():
+    cls()
+    AnimatedLogo(BankLogo)
+    SlowType("Checking Balance...", 100)
+
+def Withdraw():
+    cls()
+    AnimatedLogo(BankLogo)
+
+def Deposit():
+    cls()
+    AnimatedLogo(BankLogo)
+
+def main():
+    #requestLogin()
+    Action = mainMenu() #The main menu function returns the number, which corresponds to the action that the user wants to execute
+    if Action == 1: #Check balance
+        CheckBalance()
+    elif Action == 2: #Withdraw function
+        Withdraw()
+    elif Action == 3: #Deposit function 
+        Deposit()
+    elif Action == 4: #Exit
+        quitProgram()
 
 main()
