@@ -2,6 +2,7 @@ import time, os, sys, colorama
 from tkinter.messagebox import askquestion
 from urllib import request
 from colorama import Fore, Back, Style
+import json
 
 colorama.init(autoreset=True)
 
@@ -34,6 +35,7 @@ def printTitleScreen():
         for line in range(rows):
             print(f"{Fore.YELLOW}{Logo.splitlines()[line]}")
             time.sleep(0.2)
+
 
 #Receipt needs 
 """
@@ -140,37 +142,56 @@ def requestLogin():
         username = askQuestion(f"Please enter {'a' if (answer == 'yes') else 'your'} username to {'register' if (answer == 'yes') else 'login'} (username must be alphanumeric and longer than 3 characters): ", 
             lambda x: x.isalnum() and len(x) >= 3, # username is only allowed if alphanumeric and longer than 3 characters
             case_sensitive=True)
+        pin = askQuestion("Please enter a PIN (your 4 digit numeric identifier): ", lambda x: x.isnumeric() and len(x) == 4)
 
         if (answer == "yes"):
-            # send post request to server attempting to register the username --> CHANGE TO CHECK USERNAME DOESNT EXIST
-            res = requests.post(getRouteUrl("/register"), json={"username":username})
+            res = addUser(username, pin)
 
-            if res.status_code == 200: # username is valid
-                print("Username registered successfully.")
+            if res == True: # username is valid
+                print("Username and PIN registered successfully.")
                 break
-            elif res.status_code == 400: # username in use
+            else: # username in use
                 print("This username is already in use. Please pick another one.")
-            else: # some other server error, like an internal error
-                print("Unfortunately the request to register the username failed. Please try again.")
         else:
-            pin = askQuestion("Please enter a PIN (your 4 digit numeric identifier): ", lambda x: x.isnumeric() and len(x) == 4)
+            res = loadUser(username)
 
             # check pin is correct
-            # send post request to server to check whether user with this username exists
-            res = requests.post(getRouteUrl("/login"), json={"username":username})
-
-            #
-            if (res.status_code == 200): # user exists
+            if (res == None): # user doesnt exist
+                print("No username with that name is found. Please try again.")
+            elif (res['pin'] != pin):
+                print("Incorrect pin. Please re-enter pin.")
+            else:
                 print(f"Username found!")
                 break
-            elif (res.status_code == 400): # user does not exist
-                print("No username with that name is found. Please try again.")
-            else: # server encountered some other error
-                print("We counld not log you in at this time. Please try again.")
-
 
 def main():
+    printTitleScreen()
     requestLogin()
+
+
+def loadUser(username):
+    with open('users.json') as file:
+        users = json.loads(file)
+        if username in users:
+            return users[username]
+        else:
+            return None
+        
+
+def addUser(username, pin, balance=0):
+    with open('users.json', 'r+') as file:
+        users = json.loads(file)
+        if username in users:
+            return False
+        else:
+            users['username'] = {'pin': pin, 'balance':balance}
+            person_json = json.dumps(users)
+            file.seek(0)
+            file.write(person_json)
+            file.truncate()
+            return True
+                
+
 
 
 main()
