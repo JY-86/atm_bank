@@ -1,10 +1,1 @@
-{
-    "Test": {
-        "balance": 1000,
-        "pin": 1234
-    },
-    "Jesse": {
-        "balance": 0,
-        "pin": 5678
-    }
-}
+{"Test": {"balance": 108850, "pin": 1234}, "Jesse": {"balance": 0, "pin": 5678}, "bobby": {"pin": "1234", "balance": 0}, "bob": {"pin": "1245", "balance": 0}, "": {"balance": 900, "pin": 1234}, "GaryTheSnail": {"pin": 0, "balance": 0}, "tea": {"pin": 4568, "balance": 0}, "peepee": {"pin": 1567, "balance": 0}, "Tee": {"pin": 1345, "balance": 0}, "Bobalina": {"pin": 5876, "balance": 0}, "lala": {"pin": "310ced37200b1a0dae25edb263fe52c491f6e467268acab0ffec06666e2ed959", "balance": 0}, "boj": {"pin": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4", "balance": 0}}
