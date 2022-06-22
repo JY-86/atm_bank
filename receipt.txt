@@ -6,13 +6,13 @@ ______________________________________________________________
 |                       ║╔═╗║╔═╗║║─╔╗                        |
 |                       ║╚═╝║╚═╝║╚═╝║                        |
 |                       ╚═══╩═══╩═══╝                        |
-|    DATE: 19/06/2022                                        |
-|    TIME: 14:25:30                                          |
+|    DATE: 23/06/2022                                        |
+|    TIME: 09:22:41                                          |
 |    ADDRESS: 419A WINDSOR RD, BAULKHAM HILLS NSW 2153       |
 |                                                            |
-|    WITHDRAWAL FOR USER: JESSECLAPPED                       |
+|    DEPOSIT FOR USER: VELLA                                 |
 |    AMOUNT: $10.00                                          |
-|    CURRENT BALANCE: $101990.00                             |
+|    CURRENT BALANCE: $1980.00                               |
 |                                                            |
 |         BANK FROM HOME, THE OFFICE, OR THE ROAD,           |
 |                BBC MAKES BANKING EASIER!                   |

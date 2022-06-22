@@ -1,3 +1,7 @@
+##
+## ALL CODE WAS WRITTEN BY JOEL (although Jesse made some initial functions, they were re-edited by Joel)
+##
+
 # import necessary modules
 from argparse import Action
 import time, os, sys, colorama
@@ -40,24 +44,29 @@ def showTitleScreen():
     """
 
     BANK_LOGO = """
-    ____   _                                                           
-    |  _ \ (_)                                                          
-    | |_) | _   __ _                                                    
-    |  _ < | | / _` |                                                   
-    | |_) || || (_| |                                                   
-    |____/ |_| \__, |     _                                             
-    |  _ \      __/ |    | |                                            
-    | |_) |  __|____ __  | | __                                         
-    |  _ <  / _` || '_ \ | |/ /                                         
-    | |_) || (_| || | | ||   <                                          
-    |______ \__,_||_| |_||_|\_\                    _    _               
-    / ____|                                      | |  (_)              
-    | |      ___   _ __  _ __    ___   _ __  __ _ | |_  _   ___   _ __  
-    | |     / _ \ | '__|| '_ \  / _ \ | '__|/ _` || __|| | / _ \ | '_ \ 
-    | |____| (_) || |   | |_) || (_) || |  | (_| || |_ | || (_) || | | |
-     \_____|\___/ |_|   | .__/  \___/ |_|   \__,_| \__||_| \___/ |_| |_|
-                        | |                                             
-                        |_|                                             
+______ _                                                  
+| ___ (_)                                                 
+| |_/ /_  __ _                                            
+| ___ \ |/ _` |                                           
+| |_/ / | (_| |                                           
+\____/|_|\__, |                                           
+          __/ |                                           
+         |___/                                            
+______             _                                      
+| ___ \           | |                                     
+| |_/ / __ _ _ __ | | __                                  
+| ___ \/ _` | '_ \| |/ /                                  
+| |_/ / (_| | | | |   <                                   
+\____/ \__,_|_| |_|_|\_\    
+
+ _____                                  _   _             
+/  __ \                                | | (_)            
+| /  \/ ___  _ __ _ __   ___  _ __ __ _| |_ _  ___  _ __  
+| |    / _ \| '__| '_ \ / _ \| '__/ _` | __| |/ _ \| '_ \ 
+| \__/\ (_) | |  | |_) | (_) | | | (_| | |_| | (_) | | | |
+ \____/\___/|_|  | .__/ \___/|_|  \__,_|\__|_|\___/|_| |_|
+                 | |                                      
+                 |_|                                      
     """.splitlines()
 
     # print bank logo line by line with a small delay between each line
@@ -131,7 +140,7 @@ def getInput(message, case_sensitive):
     answer = input(message)
     return answer if case_sensitive else answer.lower()
 
-def askQuestion(message, answer_validator,  case_sensitive=True):
+def askQuestion(message, answer_validator,  case_sensitive=True, custom_message = ""):
     """
     Repeatedly asks user for an input until input meets the correct requirements, and quits program if
     too many incorrect inputs entered
@@ -141,6 +150,9 @@ def askQuestion(message, answer_validator,  case_sensitive=True):
     @param case_sensitive: whether input should be treated as case sensitive
     @return: user's (valid) answer
     """
+
+    if custom_message == "":
+        custom_message = "Your response was formatted incorrectly"
 
     # number of incorrect inputs before program quits
     LOCKOUT_NUM = 5
@@ -153,12 +165,12 @@ def askQuestion(message, answer_validator,  case_sensitive=True):
 
         # print message saying that user's answer was invalid. If user fails too many times, the program quits.
         if (i == LOCKOUT_NUM):
-            print("ERROR: INCORRECT RESPONSE FORMAT. MALICIOUS ACTIVITY SUSPECTED. COMMENCING LOCKOUT...")
+            print("ERROR: TOO MANY INCORRECT ATTEMPTS. MALICIOUS ACTIVITY SUSPECTED. COMMENCING LOCKOUT...")
             quitProgram()
         elif (i >= 3):
-            print(f"ERROR: INCORRECT RESPONSE FORMAT. YOU WILL BE LOCKED OUT OF THE SYSTEM IN {LOCKOUT_NUM - i} ATTEMPT{'S' if LOCKOUT_NUM - i >= 2 else ''}. PLEASE ENTER A VALID RESPONSE.")
+            print(f"ERROR: {custom_message}. You will be locked out of the system in {LOCKOUT_NUM - i} attempt{'s' if LOCKOUT_NUM - i >= 2 else ''}. Please enter a valid response.")
         else:
-            print("ERROR: INCORRECT RESPONSE FORMAT. PLEASE ENTER A VALID RESPONSE.")
+            print(f"ERROR: {custom_message}. Please enter a valid response.")
         
         # get new input
         user_input = getInput(message, case_sensitive)
@@ -217,7 +229,7 @@ def requestLogin():
     """
     
     # ask whether student is new, only accepting 'yes'/'no' answers
-    isNew = askQuestion("Are you a new user? (please enter yes/no): ", lambda x: x in ["yes", "no"]) == 'yes'
+    isNew = askQuestion("Are you a new user? (please enter yes/no): ", lambda x: x in ["yes", "no"], custom_message="Your answer must be either 'yes' or 'no'") == 'yes'
 
     # get user to input a correct username
     username = ""
@@ -225,13 +237,13 @@ def requestLogin():
         # enter username, with the message being adjusted based on whether user is new or not
         username = askQuestion(f"Please enter {'a' if (isNew) else 'your'} username to {'register' if (isNew) else 'login'} (username must be alphanumeric and longer than 3 characters): ", 
             lambda x: x.isalnum() and len(x) >= 3, # username is only allowed if alphanumeric and longer than 3 characters
-            case_sensitive=True)
+            case_sensitive=True, custom_message="Incorrect input format. Username has to be alphanumeric and over 3 characters")
         
         # if user is new, check that username not already taken
         if (isNew and isUserPresent(username)):
-            print("USERNAME ALREADY IN USE. PLEASE SELECT ANOTHER USERNAME.")
+            print("ERROR: That username is already in use. Please select another username.")
         elif (not isNew and not isUserPresent(username)): # if user is not new, check that username exists
-            print("NO SUCH USERNAME FOUND. PLEASE ENTER ANOTHER USERNAME.")
+            print("ERROR: No such username found. Please check your input for typos and re-enter your username.")
         else: # valid username
             break 
     
@@ -246,7 +258,7 @@ def requestLogin():
 
     while True:
         # ask for a valid pin
-        pin = int(askQuestion("Please enter a PIN (your 4 digit numeric identifier): ", lambda x: x.isnumeric() and len(x) == 4))
+        pin = askQuestion("Please enter a PIN (your 4 digit numeric identifier): ", lambda x: x.isnumeric() and len(x) == 4, custom_message="Your pin must be a 4 digit number")
 
         if (isNew): 
             # add user
@@ -259,16 +271,16 @@ def requestLogin():
         else:
             res = loadUser(username) # load given user
 
-            if (res['pin'] != hashSha256(str(pin))): # inputted pin hash does not match with the hashed pin in the file.
+            if (res['pin'] != hashSha256(pin)): # inputted pin hash does not match with the hashed pin in the file.
 
                 # print appropriate response based on number of attempts to input pin
                 if (incorrect_count == MAX_INCORRECT):
                     print(f"INCORRECT PIN ENTERED {MAX_INCORRECT} TIMES. MALICIOUS ACTIVITY SUSPECTED. COMMENCING LOCKOUT...")
                     quitProgram()
                 elif (incorrect_count >= MAX_INCORRECT - 3):
-                    print(f"INCORRECT PIN. YOU WILL BE LOCKED OUT OF THE SYSTEM IN {MAX_INCORRECT - incorrect_count} ATTEMPT{'' if MAX_INCORRECT - incorrect_count == 1 else 'S'}. PLEASE RETRY")
+                    print(f"INVALID: The PIN was incorrect. You will be locked out of the system in {MAX_INCORRECT - incorrect_count} attempt{'' if MAX_INCORRECT - incorrect_count == 1 else 's'}. Please retry.")
                 else:
-                    print("INCORRECT PIN. PLEASE RETRY.")
+                    print("INVALID: The PIN was incorrect. Please retry.")
 
                 # update number of incorrect attempts
                 incorrect_count += 1
@@ -304,7 +316,7 @@ Please enter the number of the corresponding action you would like to execute:
         print(MainMenuMessage)
 
         # get the wanted action from the user
-        action = int(askQuestion("Input wanted action (1, 2, 3, 4): ", lambda x: x in ['1', '2', '3', '4']))
+        action = int(askQuestion("Input wanted action (1, 2, 3, 4): ", lambda x: x in ['1', '2', '3', '4'], custom_message="Your response was not a number from 1-4."))
         
         # call appropriate function based on wanted action
         if (action == 1):
@@ -315,7 +327,7 @@ Please enter the number of the corresponding action you would like to execute:
             deposit()
         elif (action == 4):
             # break the loop so program can quit.
-            print("\nYOU HAVE REQUESTED TO QUIT. SHUTTING DOWN")
+            print("\nYou have requested to quit. Shutting down...")
             time.sleep(2)
             break
         
@@ -351,14 +363,14 @@ def withdraw():
         if (input == "CANCEL"):
             return "CANCEL"
         if (not input.isnumeric()):
-            return "ERROR: INPUT MUST CONSIST ONLY OF NUMERIC DIGITS. PLEASE ENTER A VALID SUM."
+            return "ERROR: Your input must have only numeric digits. Please enter a valid sum."
         input = int(input)
         if input % 5 != 0:
-            return "ERROR: INPUT MUST BE A MULTIPLE OF 5. PLEASE ENTER A VALID SUM"
-        elif input <= 0:
-            return "ERROR: INPUT MUST BE ABOVE ZERO. PLEASE ENTER A VALID SUM."
+            return "ERROR: Your input must be a multiple of 5. Please enter a valid sum."
+        elif input <= 0: # note this never gets called because 'numeric digits' case gets called first, but good to have for posterity.
+            return "ERROR: Your input must be above zero. Please enter a valid sum."
         elif input > loaded_user['balance']:
-            return "ERROR: INPUTTED SUM EXCEEDS BALANCE. PLEASE ENTER A LOWER SUM."
+            return "ERROR: The inputted sum exceeds your current balance. Please enter a lower sum."
         return "" # correct
 
     # ask user for amount to withdraw, ensuring answer is valid
@@ -388,19 +400,19 @@ def deposit():
 
     # print deposit instructions
     print(f"\nInitiating deposit. To cancel the transaction, please enter 'CANCEL' into the input bar. Please note:")
-    print(f"   • Only bank notes are accepted for deposit, and so your deposit amount must be a multiple of 5. \n   • Your current balance is: {formatBalance(loaded_user['balance'])}\n")
+    print(f"   • Only bank notes are accepted for deposit in this ATM, and so your deposit amount must be a multiple of 5. \n   • Your current balance is: {formatBalance(loaded_user['balance'])}\n")
 
     # define the answer validator that determines whether a user input is valid, and if not what message to print to user.
     def answer_validator(input):
         if (input == "CANCEL"):
             return "CANCEL"
         if (not input.isnumeric()):
-            return "ERROR: INPUT MUST BE NUMERIC. PLEASE ENTER A VALID SUM."
+            return "ERROR: Your input must be numeric. Please enter a valid sum."
         input = int(input)
         if input <= 0:
-            return "ERROR: INPUT MUST BE ABOVE ZERO. PLEASE ENTER A VALID SUM."
+            return "ERROR: Your input must be above zero. Please enter a valid sum."
         elif input % 5 != 0:
-            return "ERROR: INPUT MUST BE A MULTIPLE OF 5. PLEASE ENTER A VALID SUM."
+            return "ERROR: Your input must be a multiple of 5. Please enter a valid sum."
         return "" # correct
 
     # ask user for amount to deposit, ensuring answer is valid
