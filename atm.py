@@ -258,7 +258,7 @@ def requestLogin():
 
     while True:
         # ask for a valid pin
-        pin = askQuestion("Please enter a PIN (your 4 digit numeric identifier): ", lambda x: x.isnumeric() and len(x) == 4, custom_message="Your pin must be a 4 digit number")
+        pin = askQuestion("Please enter a PIN (your 4 digit numeric identifier): ", lambda x: x.isnumeric() and len(x) == 4, custom_message="Your pin must have only numeric characters from 0-9, and must be 4 digits long")
 
         if (isNew): 
             # add user
@@ -316,7 +316,7 @@ Please enter the number of the corresponding action you would like to execute:
         print(MainMenuMessage)
 
         # get the wanted action from the user
-        action = int(askQuestion("Input wanted action (1, 2, 3, 4): ", lambda x: x in ['1', '2', '3', '4'], custom_message="Your response was not a number from 1-4."))
+        action = int(askQuestion("Input wanted action (1, 2, 3, 4): ", lambda x: x in ['1', '2', '3', '4'], custom_message="Your response was not a number from 1-4"))
         
         # call appropriate function based on wanted action
         if (action == 1):
@@ -342,7 +342,7 @@ def checkBalance():
     Prints balance of currently loaded user
     """
 
-    print("Your current balance is: " + formatBalance(loaded_user['balance']))
+    print("\nYour current balance is: " + formatBalance(loaded_user['balance']))
 
 def withdraw():
     """
@@ -367,7 +367,7 @@ def withdraw():
         input = int(input)
         if input % 5 != 0:
             return "ERROR: Your input must be a multiple of 5. Please enter a valid sum."
-        elif input <= 0: # note this never gets called because 'numeric digits' case gets called first, but good to have for posterity.
+        elif input <= 0: # this gets called when the sum is 0
             return "ERROR: Your input must be above zero. Please enter a valid sum."
         elif input > loaded_user['balance']:
             return "ERROR: The inputted sum exceeds your current balance. Please enter a lower sum."
